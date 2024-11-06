@@ -1,0 +1,36 @@
+#!/bin/sh
+
+if [ "$1" == "" ]; then
+echo "mac is empty!"
+exit 1
+fi
+
+len=`expr length $1`
+if [ $len -ne 12 ]; then
+echo "unknow mac type!"
+exit 1
+fi
+		
+MAC=$1
+
+#Write WLAN MAC
+
+INFO0=`expr substr $MAC 1 2`
+INFO1=`expr substr $MAC 3 2`
+INFO2=`expr substr $MAC 5 2`
+INFO3=`expr substr $MAC 7 2`
+INFO4=`expr substr $MAC 9 2` 
+INFO5=`expr substr $MAC 11 2`
+		
+cd /var
+dd if=/dev/mtd3 of=./factory.bin
+dd if=./factory.bin of=./tem.bin bs=1 count=4
+
+printf "\x$INFO0\x$INFO1\x$INFO2\x$INFO3\x$INFO4\x$INFO5" >> tem.bin
+
+dd if=./factory.bin of=./tem.bin bs=1 count=131062 skip=10 seek=10
+
+mtd write tem.bin /dev/mtd3
+rm -rf factory.bin
+rm -rf tem.bin
+/sbin/jffs2reset -r -y

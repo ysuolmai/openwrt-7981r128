@@ -1,0 +1,44 @@
+#!/bin/sh /etc/rc.common
+
+ERROR_COUNT=0
+
+START=24
+
+fdisk_add_disk(){
+    fdisk /dev/$1 >& /dev/null <<EOF
+n
+p
+1
+
+
+w
+EOF
+    logger -t "DISK" "disk:fdisk add disk p1 ok"
+}
+
+mkfs_disk() {
+	mkfs.ext4 -c -F /dev/$1 2>/dev/null
+}
+
+mount_disk() {
+    local partition=$1
+    local mount_point="/mnt/${partition}"
+    mkdir -p ${mount_point}
+    mount /dev/${partition} ${mount_point}
+}
+
+start() {
+    local disk="sda"
+    local partition="sda1"
+    if [ -e "/dev/${disk}" ]; then
+        if [ ! -b "/dev/${partition}" ]; then
+            wipefs -a -f /dev/${disk}
+            fdisk_add_disk ${disk}
+            mkfs_disk ${partition}
+        fi
+        mount_disk ${partition}
+    else
+        logger -t "DISK" "ERROR,not find /dev/${disk}!"
+    fi
+}
+

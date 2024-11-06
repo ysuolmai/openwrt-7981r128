@@ -1,0 +1,32 @@
+#!/bin/sh
+
+. /lib/functions/uci-defaults.sh
+
+board_name() {
+	local name
+
+	[ -f /tmp/sysinfo/board_name ] && name=$(cat /tmp/sysinfo/board_name)
+	[ -z "$name" ] && name="unknown"
+	echo "${name%-[0-9]*M}"
+}
+
+board=$(board_name)
+board_config_update
+
+case $board in
+mediatek,mt7981-spim-snand-7981r128)
+	ucidef_set_led_netdev "lan" "LAN" "LAN" "lan2"
+	ucidef_set_led_netdev "sfp" "SFP" "SFP" "eth1"
+	ucidef_set_led_netdev "wifi5g" "WIFI5G" "WIFI5G" "rax0"
+	ucidef_set_led_netdev "wifi2g" "WIFI2G" "WIFI2G" "ra0"
+     ;;
+
+mediatek,mt7981-spim-snand-7981r125)
+	ucidef_set_led_netdev "sfp" "SFP" "SFP" "eth1"
+	ucidef_set_led_netdev "wifi5g" "WIFI5G" "WIFI5G" "rax0"
+	ucidef_set_led_netdev "wifi2g" "WIFI2G" "WIFI2G" "ra0"
+     ;;
+
+esac
+board_config_flush
+exit 0

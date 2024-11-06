@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+
+START=11
+
+start() {
+    MAC_ADDRESS=$(dd if=/dev/mtd3 bs=1 skip=4 count=6 2>/dev/null | hexdump -v -e '6/1 "%02x:"' | sed 's/:$//')
+    MAC_ADDRESS_NO_COLON=$(echo $MAC_ADDRESS | tr -d ':')
+    NEW_MAC_ADDRESS=$(printf '%012X\n' $(($(printf '%d\n' 0x$MAC_ADDRESS_NO_COLON)-1)))
+    FORMATTED_MAC_ADDRESS="${NEW_MAC_ADDRESS:0:2}:${NEW_MAC_ADDRESS:2:2}:${NEW_MAC_ADDRESS:4:2}:${NEW_MAC_ADDRESS:6:2}:${NEW_MAC_ADDRESS:8:2}:${NEW_MAC_ADDRESS:10:2}"
+    ifconfig eth1 hw ether ${FORMATTED_MAC_ADDRESS}
+    ifconfig lan1 hw ether ${MAC_ADDRESS}
+    ifconfig lan2 hw ether ${MAC_ADDRESS}
+    ifconfig lan3 hw ether ${MAC_ADDRESS}
+    ifconfig lan4 hw ether ${MAC_ADDRESS}
+    ifconfig lan5 hw ether ${MAC_ADDRESS}
+}
