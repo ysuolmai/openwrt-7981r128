@@ -8,7 +8,7 @@
 # Blog: https://p3terx.com
 #============================================================
 #add packages
-git clone https://github.com/shmily103/openwrt-7981r128.git package
+git clone https://github.com/shmily103/openwrt-7981r128.git diy
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.6.1/g' package/base-files/files/bin/config_generate
@@ -28,5 +28,5 @@ sed -i 's/ImmortalWrt/Panzy/g' package/base-files/files/bin/config_generate
 #rm -rf target/linux/mediatek/patches-5.4/9921-support-SX-7981R128-for-mtk-sdk-v7.6.6.1.patch
 #\cp -rf diy/9921-support-SX-7981R128-for-mtk-sdk-v7.6.6.1_hanwckf.patch target/linux/mediatek/patches-5.4
 #ADD target
-\cp -rf package/diy/mt7981-spim-nand-7981r128.dts target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek
-\cp -rf package/diy/mt7981.mk target/linux/mediatek/image
+\cp -rf diy/diy/mt7981-spim-nand-7981r128.dts target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek
+\cp -rf diy/diy/mt7981.mk target/linux/mediatek/image
