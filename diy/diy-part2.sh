@@ -30,4 +30,4 @@ sed -i 's/ImmortalWrt/Panzy/g' package/base-files/files/bin/config_generate
 #ADD target
 \cp -rf diy/diy/mt7981-spim-nand-7981r128.dts target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek
 \cp -rf diy/diy/mt7981.mk target/linux/mediatek/image
-\cp -rf diy/diy/9921-support-SX-7981R128-for-mtk-sdk-v7.6.6.1_fix.patch target/linux/mediatek/patches-5.4
+\cp -rf diy/diy/9921-support-SX-7981R128-for-mtk-sdk-v7.6.6.1.patch target/linux/mediatek/patches-5.4
