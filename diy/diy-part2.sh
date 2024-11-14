@@ -17,7 +17,7 @@ sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac802
 # Modify default SSID
 sed -i 's/ssid=ImmortalWrt/ssid=Panzy/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 # Modify Automount
-#\cp -rf package/Panzy/mount.hotplug package/system/fstools/files
+\cp -rf diy/diy/mount.hotplug package/system/fstools/files
 # Modify default theme
 #sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 # Modify hostname
