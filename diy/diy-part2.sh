@@ -36,8 +36,10 @@ sed -i 's/ImmortalWrt/Panzy/g' package/base-files/files/bin/config_generate
 rm -rf feeds/luci/applications/luci-app-aria2
 rm -rf feeds/luci/applications/luci-app-samba4
 rm -rf feeds/luci/applications/luci-app-openclash
-git clone -b openwrt-21.02 https://github.com/openwrt/luci.git diy
-git clone https://github.com/vernesong/OpenClash.git diy
+cd diy
+git clone -b openwrt-21.02 https://github.com/openwrt/luci.git
+git clone https://github.com/vernesong/OpenClash.git
+cd ..
 \cp -rf diy/luci/applications/luci-app-aria2 feeds/luci/applications
 \cp -rf diy/luci/applications/luci-app-samba4 feeds/luci/applications
 \cp -rf diy/OpenClash/luci-app-openclash feeds/luci/applications
