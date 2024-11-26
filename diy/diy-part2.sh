@@ -31,3 +31,15 @@ sed -i 's/ImmortalWrt/Panzy/g' package/base-files/files/bin/config_generate
 \cp -rf diy/diy/mt7981-spim-nand-7981r128.dts target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek
 \cp -rf diy/diy/mt7981.mk target/linux/mediatek/image
 \cp -rf diy/diy/9921-support-SX-7981R128-for-mtk-sdk-v7.6.6.1.patch target/linux/mediatek/patches-5.4
+
+# Modify aria2 samba
+rm -rf feeds/luci/applications/luci-app-aria2
+rm -rf feeds/luci/applications/luci-app-samba4
+rm -rf feeds/luci/applications/luci-app-openclash
+git clone -b openwrt-21.02 https://github.com/openwrt/luci.git diy
+git clone https://github.com/vernesong/OpenClash.git diy
+\cp -rf diy/luci/applications/luci-app-aria2 feeds/luci/applications
+\cp -rf diy/luci/applications/luci-app-samba4 feeds/luci/applications
+\cp -rf diy/OpenClash/luci-app-openclash feeds/luci/applications
+rm -rf diy
+
