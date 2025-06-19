@@ -79,7 +79,7 @@ UPDATE_PACKAGE "luci-app-ddns-go" "sirpdboy/luci-app-ddns-go" "main"
 UPDATE_PACKAGE "luci-app-openlist" "sbwml/luci-app-openlist" "main"
 
 #small-package
-UPDATE_PACKAGE "xray-core xray-plugin dns2tcp dns2socks haproxy hysteria \
+UPDATE_PACKAGE "xray-core xray-plugin dns2tcp dns2socks hysteria \
         naiveproxy shadowsocks-rust v2ray-core v2ray-geodata v2ray-geoview v2ray-plugin \
         tuic-client chinadns-ng ipt2socks tcping trojan-plus simple-obfs shadowsocksr-libev \
         luci-app-passwall smartdns luci-app-smartdns v2dat mosdns luci-app-mosdns \
