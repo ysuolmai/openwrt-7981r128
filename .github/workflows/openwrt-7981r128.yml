@@ -85,6 +85,8 @@ jobs:
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
+        cd ./openwrt/ && echo "WRT_HASH=$(git log -1 --pretty=format:'%h')" >> $GITHUB_ENV
+
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
     - name: Load custom feeds
@@ -93,6 +95,40 @@ jobs:
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
+
+    - name: Check Caches
+      id: check-cache
+      uses: actions/cache@main
+      with:
+        key: 7981R128-${{env.WRT_HASH}}
+        restore-keys: 7981R128
+        path: |
+          ./openwrt/.ccache
+          ./openwrt/staging_dir/host*
+          ./openwrt/staging_dir/tool*
+
+    - name: Update Caches
+      run: |
+        if [ -d "./openwrt/staging_dir" ]; then
+          find "./openwrt/staging_dir" -type d -name "stamp" -not -path "*target*" | while read -r DIR; do
+            find "$DIR" -type f -exec touch {} +
+          done
+
+          mkdir -p ./openwrt/tmp && echo "1" > ./openwrt/tmp/.build
+
+          echo "toolchain skiped done!"
+        else
+          echo "caches missed!"
+        fi
+
+        if ${{steps.check-cache.outputs.cache-hit != 'true'}}; then
+          CACHE_LIST=$(gh cache list --key "7981R128" | cut -f 1)
+          for CACHE_KEY in $CACHE_LIST; do
+            gh cache delete $CACHE_KEY
+          done
+
+          echo "caches cleanup done!"
+        fi
 
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
