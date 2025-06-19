@@ -76,7 +76,7 @@ UPDATE_PACKAGE "luci-app-poweroff" "esirplayground/luci-app-poweroff" "master"
 UPDATE_PACKAGE "luci-app-tailscale" "asvow/luci-app-tailscale" "main"
 UPDATE_PACKAGE "openwrt-gecoosac" "lwb1978/openwrt-gecoosac" "main"
 UPDATE_PACKAGE "luci-app-ddns-go" "sirpdboy/luci-app-ddns-go" "main"
-UPDATE_PACKAGE "luci-app-openlist" "sbwml/luci-app-openlist" "main"
+#UPDATE_PACKAGE "luci-app-openlist" "sbwml/luci-app-openlist" "main"
 
 #small-package
 UPDATE_PACKAGE "xray-core xray-plugin dns2tcp dns2socks hysteria \
@@ -149,8 +149,8 @@ provided_config_lines=(
     "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_SingBox=n"
     "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_Plus=n"
     "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin=n"
-    "CONFIG_PACKAGE_luci-app-openlist=y"
-    "CONFIG_PACKAGE_luci-i18n-openlist-zh-cn=y"
+    #"CONFIG_PACKAGE_luci-app-openlist=y"
+    #"CONFIG_PACKAGE_luci-i18n-openlist-zh-cn=y"
     "CONFIG_PACKAGE_luci-app-ssr-plus=y"
     "CONFIG_PACKAGE_luci-app-passwall2=y"
 )
@@ -213,11 +213,4 @@ if [ -d "package/luci-app-vlmcsd" ]; then
     find package/luci-app-vlmcsd -type f \( -name '*.js' -o -name '*.lua' -o -name '*.htm' \) -exec sed -i 's#/etc/vlmcsd.ini#/etc/vlmcsd/vlmcsd.ini#g' {} +
 fi
 
-#update golang
-GOLANG_REPO="https://github.com/sbwml/packages_lang_golang"
-GOLANG_BRANCH="24.x"
-if [[ -d ./feeds/packages/lang/golang ]]; then
-	\rm -rf ./feeds/packages/lang/golang
-	git clone $GOLANG_REPO -b $GOLANG_BRANCH ./feeds/packages/lang/golang
-fi
 
