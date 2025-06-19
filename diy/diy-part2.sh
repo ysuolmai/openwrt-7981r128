@@ -204,4 +204,4 @@ if [ -d "package/luci-app-vlmcsd" ]; then
     find package/luci-app-vlmcsd -type f \( -name '*.js' -o -name '*.lua' -o -name '*.htm' \) -exec sed -i 's#/etc/vlmcsd.ini#/etc/vlmcsd/vlmcsd.ini#g' {} +
 fi
 
-
+find ./ -type f -name "go.mod" -path "*/geoview*/go.mod" -exec sed -i '/^toolchain/d' {} +
