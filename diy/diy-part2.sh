@@ -168,24 +168,18 @@ find ./ -name "cascade.less" -exec sed -i 's/#5e72e4/#31A1A1/g; s/#483d8b/#31A1A
 find ./ -name "dark.less" -exec sed -i 's/#5e72e4/#31A1A1/g; s/#483d8b/#31A1A1/g' {} \;
 
 #修改ttyd为免密
-install -Dm755 "${GITHUB_WORKSPACE}/Scripts/99_ttyd-nopass.sh" "package/base-files/files/etc/uci-defaults/99_ttyd-nopass"
-
-install -Dm755 "${GITHUB_WORKSPACE}/Scripts/99_set_argon_primary" "package/base-files/files/etc/uci-defaults/99_set_argon_primary"
-install -Dm755 "${GITHUB_WORKSPACE}/Scripts/99-distfeeds.conf" "package/emortal/default-settings/files/99-distfeeds.conf"
-sed -i '/define Package\/default-settings\/install/a \
-\t$(INSTALL_DIR) $(1)/etc\n\t$(INSTALL_DATA) ./files/99-distfeeds.conf $(1)/etc/99-distfeeds.conf' \
-package/emortal/default-settings/Makefile
-
+install -Dm755 "${GITHUB_WORKSPACE}/diy/99_ttyd-nopass.sh" "package/base-files/files/etc/uci-defaults/99_ttyd-nopass"
+install -Dm755 "${GITHUB_WORKSPACE}/diy/99_set_argon_primary" "package/base-files/files/etc/uci-defaults/99_set_argon_primary"
 
 find ./ -name "getifaddr.c" -exec sed -i 's/return 1;/return 0;/g' {} \;
 
 
 if [ -d "package/vlmcsd" ]; then
     mkdir -p "package/vlmcsd/patches"
-    cp -f "${GITHUB_WORKSPACE}/Scripts/001-fix_compile_with_ccache.patch" "package/vlmcsd/patches"
+    cp -f "${GITHUB_WORKSPACE}/diy/001-fix_compile_with_ccache.patch" "package/vlmcsd/patches"
 
     MAKEFILE="package/vlmcsd/Makefile"
-    cp -f "${GITHUB_WORKSPACE}/Scripts/992_vlmcsd_init" "package/vlmcsd/files/vlmcsd.init"
+    cp -f "${GITHUB_WORKSPACE}/diy/992_vlmcsd_init" "package/vlmcsd/files/vlmcsd.init"
     chmod +x package/vlmcsd/files/vlmcsd.init
     
     # 如果 Makefile 存在且尚未包含 INSTALL_INIT_SCRIPT，则插入 init.d 安装逻辑
