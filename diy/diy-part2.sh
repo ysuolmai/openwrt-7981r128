@@ -141,18 +141,9 @@ provided_config_lines=(
     #"CONFIG_PACKAGE_luci-app-lucky=y"
     "CONFIG_PACKAGE_luci-app-gecoosac=y"
     "CONFIG_PACKAGE_luci-app-passwall=y"
-    "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Client=n"
-    "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Server=n"
-    "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Client=n"
-    "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Client=n"
-    "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Simple_Obfs=n"
-    "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_SingBox=n"
-    "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_Plus=n"
-    "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin=n"
+    "CONFIG_PACKAGE_luci-app-passwall2=y"
     "CONFIG_PACKAGE_luci-app-openlist=y"
     "CONFIG_PACKAGE_luci-i18n-openlist-zh-cn=y"
-    "CONFIG_PACKAGE_luci-app-ssr-plus=y"
-    "CONFIG_PACKAGE_luci-app-passwall2=y"
 )
 
 
