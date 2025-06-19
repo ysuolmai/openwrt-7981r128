@@ -125,14 +125,14 @@ provided_config_lines=(
     "CONFIG_PACKAGE_nano=y"
     "CONFIG_BUSYBOX_CONFIG_LSUSB=n"
     "CONFIG_PACKAGE_luci-app-netspeedtest=y"
-    "CONFIG_PACKAGE_luci-app-vlmcsd=y"
+    #"CONFIG_PACKAGE_luci-app-vlmcsd=y"
     "CONFIG_COREMARK_OPTIMIZE_O3=y"
     "CONFIG_COREMARK_ENABLE_MULTITHREADING=y"
     "CONFIG_COREMARK_NUMBER_OF_THREADS=6"
     #"CONFIG_PACKAGE_luci-theme-design=y"
     "CONFIG_PACKAGE_luci-app-filetransfer=y"
     "CONFIG_PACKAGE_openssh-sftp-server=y"
-    "CONFIG_PACKAGE_luci-app-frpc=m" 
+    #"CONFIG_PACKAGE_luci-app-frpc=m" 
     "CONFIG_OPKG_USE_CURL=y"
     "CONFIG_PACKAGE_opkg=y"   
     "CONFIG_USE_APK=n"
@@ -142,8 +142,8 @@ provided_config_lines=(
     "CONFIG_PACKAGE_luci-app-gecoosac=y"
     "CONFIG_PACKAGE_luci-app-passwall=y"
     "CONFIG_PACKAGE_luci-app-passwall2=y"
-    "CONFIG_PACKAGE_luci-app-openlist=y"
-    "CONFIG_PACKAGE_luci-i18n-openlist-zh-cn=y"
+    #"CONFIG_PACKAGE_luci-app-openlist=y"
+    #"CONFIG_PACKAGE_luci-i18n-openlist-zh-cn=y"
 )
 
 
