@@ -165,6 +165,25 @@ install -Dm755 "${GITHUB_WORKSPACE}/diy/99_set_argon_primary" "package/base-file
 find ./ -name "getifaddr.c" -exec sed -i 's/return 1;/return 0;/g' {} \;
 
 
+#fix makefile for apk
+if [ -f ./package/v2ray-geodata/Makefile ]; then
+    sed -i 's/VER)-\$(PKG_RELEASE)/VER)-r\$(PKG_RELEASE)/g' ./package/v2ray-geodata/Makefile
+fi
+if [ -f ./package/luci-lib-taskd/Makefile ]; then
+    sed -i 's/>=1\.0\.3-1/>=1\.0\.3-r1/g' ./package/luci-lib-taskd/Makefile
+fi
+if [ -f ./package/luci-app-openclash/Makefile ]; then
+    sed -i '/^PKG_VERSION:=/a PKG_RELEASE:=1' ./package/luci-app-openclash/Makefile
+fi
+if [ -f ./package/luci-app-quickstart/Makefile ]; then
+    # 把 PKG_VERSION:=x.y.z-n 拆成 PKG_VERSION:=x.y.z 和 PKG_RELEASE:=n
+    sed -i -E 's/PKG_VERSION:=([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/PKG_VERSION:=\1\nPKG_RELEASE:=\2/' ./package/luci-app-quickstart/Makefile
+fi
+if [ -f ./package/luci-app-store/Makefile ]; then
+    # 把 PKG_VERSION:=x.y.z-n 拆成 PKG_VERSION:=x.y.z 和 PKG_RELEASE:=n
+    sed -i -E 's/PKG_VERSION:=([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)/PKG_VERSION:=\1\nPKG_RELEASE:=\2/' ./package/luci-app-store/Makefile
+fi
+
 if [ -d "package/vlmcsd" ]; then
     mkdir -p "package/vlmcsd/patches"
     cp -f "${GITHUB_WORKSPACE}/diy/001-fix_compile_with_ccache.patch" "package/vlmcsd/patches"
