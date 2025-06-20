@@ -204,4 +204,12 @@ if [ -d "package/luci-app-vlmcsd" ]; then
     find package/luci-app-vlmcsd -type f \( -name '*.js' -o -name '*.lua' -o -name '*.htm' \) -exec sed -i 's#/etc/vlmcsd.ini#/etc/vlmcsd/vlmcsd.ini#g' {} +
 fi
 
-find ./ -type f -name "go.mod" -path "*/geoview*/go.mod" -exec sed -i '/^toolchain/d' {} +
+
+#update golang
+GOLANG_REPO="https://github.com/sbwml/packages_lang_golang"
+GOLANG_BRANCH="24.x"
+if [[ -d ./feeds/packages/lang/golang ]]; then
+	\rm -rf ./feeds/packages/lang/golang
+	git clone $GOLANG_REPO -b $GOLANG_BRANCH ./feeds/packages/lang/golang
+fi
+
