@@ -148,8 +148,8 @@ provided_config_lines=(
     "CONFIG_OPKG_USE_CURL=y"
     "CONFIG_PACKAGE_opkg=y"   
     "CONFIG_USE_APK=n"
-    "CONFIG_PACKAGE_luci-app-openlist=y"
-    "CONFIG_PACKAGE_luci-i18n-openlist-zh-cn=y"
+    #"CONFIG_PACKAGE_luci-app-openlist=y"
+    #"CONFIG_PACKAGE_luci-i18n-openlist-zh-cn=y"
 )
 
 # Append configuration lines to .config
