@@ -19,9 +19,9 @@ sed -i 's/ssid=ImmortalWrt/ssid=Panzy/g' package/kernel/mac80211/files/lib/wifi/
 # Modify Automount
 \cp -rf diy/diy/mount.hotplug package/system/fstools/files
 # Modify default theme
-#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 # Modify hostname
-sed -i 's/ImmortalWrt/Panzy/g' package/base-files/files/bin/config_generate
+#sed -i 's/ImmortalWrt/Panzy/g' package/base-files/files/bin/config_generate
 # Modify LAN port
 #sed -i 's/eth0/eth6/g' package/base-files/files/etc/board.d/99-default_network
 # Modify patch
