@@ -48,15 +48,21 @@ FILOGIC_EOF
 # 2. 系统个性化配置
 # ---------------------------------------------------------------
 
-# 开启 WiFi，修改默认 SSID
-sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/ssid=ImmortalWrt/ssid=Panzy/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+# 修改默认 SSID
+# 注：新版 immortalwrt WiFi 默认已是开启状态（mac80211.uc 内 disabled='0'），无需再 sed
+# 配置脚本从 mac80211.sh (bash) 改为 mac80211.uc (ucode)，默认 SSID 也从 ImmortalWrt 变成 ImmortalWRT
+WIFI_UC=package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+if [ -f "$WIFI_UC" ]; then
+    sed -i 's/"ImmortalWRT"/"Panzy"/g' "$WIFI_UC"
+fi
 
 # 自动挂载脚本
 \cp -f "${GITHUB_WORKSPACE}/diy/mount.hotplug" package/system/fstools/files/mount.hotplug
 
 # 默认主题改为 argon
-sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
+# 注：新版 immortalwrt 中 luci-theme-bootstrap 依赖定义在 luci-light/Makefile 里（不是 luci/Makefile）
+# 用 glob 一次性匹配所有 collections，更鲁棒
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/*/Makefile
 
 # ---------------------------------------------------------------
 # 3. 安装/更新第三方软件包
