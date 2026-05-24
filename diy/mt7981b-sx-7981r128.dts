@@ -15,10 +15,13 @@
  *  - Removed &hnat (handled by kmod-mtk-hnat, no DT node needed in 6.18)
  *  - Removed &afe PCM audio (not needed for router function)
  *
- * TODO (requires hardware verification):
- *  - Confirm mt7981b.dtsi is correct variant (vs mt7981a.dtsi)
- *  - Verify MAC address offset in factory partition (currently 0x4)
- *  - Verify gmac1 SFP phy-mode: "2500base-x" locks to 2.5G only;
+ * Notes:
+ *  - mt7981b.dtsi: confirmed correct — all VIKINGYFY/immortalwrt mt7981 devices use 'b' variant
+ *  - EN8801SC PHY (0x67c9de0a): driver built into kernel as CONFIG_AIROHA_EN8801SC_PHY=y,
+ *    no kmod package needed
+ *  - MAC address: original DTS had no nvmem-layout for MAC; U-Boot passes it to kernel,
+ *    so no nvmem cells are defined here
+ *  - gmac1 SFP phy-mode: "2500base-x" locks to 2.5G SFP+ only;
  *    change to "sgmii" if standard 1G SFP modules are also needed
  */
 
@@ -126,9 +129,6 @@
 		reg = <0>;
 		phy-mode = "2500base-x";
 
-		nvmem-cell-names = "mac-address";
-		nvmem-cells = <&macaddr_factory 0>;
-
 		fixed-link {
 			speed = <2500>;
 			full-duplex;
@@ -144,14 +144,12 @@
 		phy-mode = "2500base-x";
 		managed = "in-band-status";
 		sfp = <&sfp_wan>;
-
-		nvmem-cell-names = "mac-address";
-		nvmem-cells = <&macaddr_factory 1>;
 	};
 };
 
 &mdio_bus {
-	/* Airoha EN8801S 2.5G PHY on switch port 5 */
+	/* Airoha EN8801SC 2.5G PHY on switch port 5.
+	 * Driver: CONFIG_AIROHA_EN8801SC_PHY=y (built into kernel, no kmod needed). */
 	phy5: phy@5 {
 		compatible = "ethernet-phy-id67c9.de0a";
 		reg = <5>;
@@ -277,16 +275,6 @@
 					/* WiFi calibration EEPROM for mt7976/mt7981 (4KB) */
 					eeprom_factory: eeprom@0 {
 						reg = <0x0 0x1000>;
-					};
-
-					/* MAC address base for all interfaces.
-					 * TODO: verify offset 0x4 against actual factory
-					 * partition dump from the hardware. Common MTK SDK
-					 * locations are 0x4, 0x2A, or 0xE000. */
-					macaddr_factory: macaddr@4 {
-						compatible = "mac-base";
-						reg = <0x4 0x6>;
-						#nvmem-cell-cells = <1>;
 					};
 				};
 			};
