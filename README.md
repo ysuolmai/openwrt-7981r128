@@ -29,30 +29,39 @@
 3. 选择左侧 `openwrt-7981r128` workflow
 4. 点击右上角 **Run workflow** 手动触发
 5. 等待约 1–2 小时（首次编译会更久，因为要下载所有源码和工具链）
-6. 编译完成后到 **Releases** 页面下载 `sysupgrade.itb`
+6. 编译完成后到 **Releases** 页面下载固件
 
 ---
 
 ## 安装
 
+固件产物（在 Release 里）：
+
+| 文件 | 格式 | 用途 |
+|---|---|---|
+| `...-squashfs-sysupgrade.bin` | sysupgrade-tar | **推荐**。OpenWrt 系统内 sysupgrade 升级；也可在 hanwckf 改的 U-Boot HTTP recovery 页面上传 |
+| `...-squashfs-factory.bin` | 裸 UBI 镜像（magic `UBI#`） | U-Boot 命令行下 `nand write` 直刷 `ubi` 分区时使用 |
+
 ### 已经在跑 OpenWrt（包括老的 hanwckf 版本）
 
-通过 LuCI 系统升级界面上传 `sysupgrade.itb`，建议勾选"强制升级"（因为换了完全不同的源码树和内核版本，分区布局虽相同但 board id 不同）。
+通过 LuCI **系统升级** 上传 `sysupgrade.bin`，正常勾选/不勾选保留配置都行。新旧 board name 都在 `SUPPORTED_DEVICES` 里（`sx,7981r128` 和 `mediatek,mt7981-spim-snand-7981r128`），**不需要** `-F` 强刷。
 
 或者命令行：
 
 ```sh
-sysupgrade -F -n /tmp/sysupgrade.itb
+sysupgrade -n /tmp/sysupgrade.bin    # -n = 不保留配置；想保留就去掉
 ```
 
-`-F` 跳过 board 兼容性检查，`-n` 不保留配置（建议第一次刷新固件源时使用）。
+### hanwckf 改的 U-Boot HTTP recovery 页面
+
+串口选 1 进 web，直接上传 `sysupgrade.bin`。该 U-Boot 接受 sysupgrade-tar 格式，会自动解出 kernel 和 rootfs 写到 UBI 对应 volume。
 
 ### 原厂 MTK SDK 固件
 
 本项目**不产出** U-Boot 链镜像（无 `preloader.bin` / `bl31-uboot.fip`），从原厂直刷需要：
 
 - 先刷一个 [hanwckf/immortalwrt-mt798x](https://github.com/hanwckf/immortalwrt-mt798x) 老版本作为跳板，再 sysupgrade 到本项目固件；
-- 或者通过 U-Boot 命令行手动刷写 UBI 卷。
+- 或者通过 U-Boot 命令行手动 `nand write` 刷 `factory.bin` 到 ubi 分区。
 
 ---
 
@@ -117,7 +126,7 @@ diy/
 
 ## 已知限制
 
-1. **仅产出 sysupgrade 镜像**：没有 `preloader.bin` / `bl31-uboot.fip`，因为 VIKINGYFY 源码不包含此设备的 U-Boot 配置。
+1. **不产出 U-Boot 链镜像**：没有 `preloader.bin` / `bl31-uboot.fip`，因为 VIKINGYFY 源码不包含此设备的 U-Boot 配置；从原厂第一次刷机需要 hanwckf 老固件作跳板。
 2. **SFP WAN 锁定 2.5G**：当前 DTS `phy-mode = "2500base-x"`，只支持 2.5G SFP+ 模块。如需兼容 1G SFP，需将 `gmac1` 的 `phy-mode` 改为 `"sgmii"`。
 3. **MAC 地址**：依赖 U-Boot 通过 kernel cmdline 传递；如果 U-Boot 配置异常，MAC 可能随机化。
 4. **首次构建慢**：约 1–2 小时（GitHub Actions 标准 runner）。增量构建会快很多。
