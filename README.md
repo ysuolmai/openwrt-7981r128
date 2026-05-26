@@ -11,7 +11,7 @@
 | 项目 | 规格 |
 |---|---|
 | SoC | MediaTek MT7981B（双核 ARM Cortex-A53 @ 1.3 GHz） |
-| 内存 | 256 MB DDR |
+| 内存 | 512 MB DDR |
 | 存储 | 128 MB SPI NAND（带 NMBM 坏块管理） |
 | 有线网口 | 1× LAN（千兆，MT7531 内部）+ 1× LAN（2.5G，外置 Airoha EN8801SC PHY） |
 | WAN | 1× SFP 笼（直连 gmac1，锁定 2500base-x） |
