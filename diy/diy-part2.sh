@@ -58,6 +58,23 @@ endef
 TARGET_DEVICES += sx_7981r128
 FILOGIC_EOF
 
+# 1.5. 注入 board.d/02_network 配置
+#      定义 LAN/WAN 端口分配：lan1+lan2 → br-lan，eth1 (SFP) → WAN
+#      没有这个配置，OpenWrt 会走默认 *) 分支，端口不能正常工作（br-lan 里只有 eth0）
+BOARD_NETWORK="target/linux/mediatek/filogic/base-files/etc/board.d/02_network"
+if [ -f "$BOARD_NETWORK" ] && ! grep -q 'sx,7981r128' "$BOARD_NETWORK"; then
+    awk '
+        !done && /^\t\*\)$/ {
+            print "\tsx,7981r128)"
+            print "\t\tucidef_set_interfaces_lan_wan \"lan1 lan2\" \"eth1\""
+            print "\t\t;;"
+            done = 1
+        }
+        { print }
+    ' "$BOARD_NETWORK" > "$BOARD_NETWORK.new" && mv "$BOARD_NETWORK.new" "$BOARD_NETWORK"
+    echo "[device-add] 02_network case 已注入"
+fi
+
 # ---------------------------------------------------------------
 # 2. 默认主题改为 Argon（理论上 immortalwrt 自带 luci-theme-argon）
 # ---------------------------------------------------------------
