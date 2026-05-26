@@ -57,14 +57,15 @@ TARGET_DEVICES += sx_7981r128
 FILOGIC_EOF
 
 # 1.5. 注入 board.d/02_network 配置
-#      定义 LAN/WAN 端口分配：lan1+lan2 → br-lan，eth1 (SFP) → WAN
+#      端口分配：lan1（千兆）→ br-lan，eth1（SFP）→ WAN
+#      lan2（2.5G EN8801SC）通过 uci-defaults 单独配置为 wan2，不在这里声明
 #      没有这个配置，OpenWrt 会走默认 *) 分支，端口不能正常工作（br-lan 里只有 eth0）
 BOARD_NETWORK="target/linux/mediatek/filogic/base-files/etc/board.d/02_network"
 if [ -f "$BOARD_NETWORK" ] && ! grep -q 'sx,7981r128' "$BOARD_NETWORK"; then
     awk '
         !done && /^\t\*\)$/ {
             print "\tsx,7981r128)"
-            print "\t\tucidef_set_interfaces_lan_wan \"lan1 lan2\" \"eth1\""
+            print "\t\tucidef_set_interfaces_lan_wan \"lan1\" \"eth1\""
             print "\t\t;;"
             done = 1
         }
@@ -72,6 +73,47 @@ if [ -f "$BOARD_NETWORK" ] && ! grep -q 'sx,7981r128' "$BOARD_NETWORK"; then
     ' "$BOARD_NETWORK" > "$BOARD_NETWORK.new" && mv "$BOARD_NETWORK.new" "$BOARD_NETWORK"
     echo "[device-add] 02_network case 已注入"
 fi
+
+# 1.6. 注入首次启动 uci-defaults
+#      - 启用 WiFi（radio0/radio1 默认 disabled=1，这里改为 0）
+#      - 添加 wan2 接口（lan2，2.5G EN8801SC PHY，DHCP）并加入防火墙 WAN zone
+mkdir -p package/base-files/files/etc/uci-defaults
+cat > package/base-files/files/etc/uci-defaults/98_sx_7981r128_init.sh << 'UCI_EOF'
+#!/bin/sh
+# 仅对 sx,7981r128 执行
+[ "$(cat /tmp/sysinfo/board_name 2>/dev/null)" = "sx,7981r128" ] || exit 0
+
+# --- WiFi：启用双频射频 ---
+uci set wireless.radio0.disabled=0
+uci set wireless.radio1.disabled=0
+uci commit wireless
+
+# --- 网络：添加 wan2（2.5G 口，lan2）---
+uci set network.wan2=interface
+uci set network.wan2.device=lan2
+uci set network.wan2.proto=dhcp
+uci commit network
+
+# --- 防火墙：将 wan2 加入 WAN zone ---
+# 找到 wan zone 的 index（通常是 1，但用 foreach 更安全）
+wan_zone_idx=""
+i=0
+while uci get "firewall.@zone[$i]" >/dev/null 2>&1; do
+    if [ "$(uci get firewall.@zone[$i].name 2>/dev/null)" = "wan" ]; then
+        wan_zone_idx=$i
+        break
+    fi
+    i=$((i + 1))
+done
+if [ -n "$wan_zone_idx" ]; then
+    uci add_list firewall.@zone[$wan_zone_idx].network=wan2
+    uci commit firewall
+fi
+
+exit 0
+UCI_EOF
+chmod +x package/base-files/files/etc/uci-defaults/98_sx_7981r128_init.sh
+echo "[device-add] uci-defaults 98_sx_7981r128_init.sh 已注入"
 
 # ---------------------------------------------------------------
 # 2. 默认主题改为 Argon（理论上 immortalwrt 自带 luci-theme-argon）
