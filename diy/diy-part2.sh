@@ -57,15 +57,15 @@ TARGET_DEVICES += sx_7981r128
 FILOGIC_EOF
 
 # 1.5. 注入 board.d/02_network 配置
-#      端口分配：lan1（千兆）→ br-lan，eth1（SFP）→ WAN
-#      lan2（2.5G EN8801SC）通过 uci-defaults 单独配置为 wan2，不在这里声明
+#      端口分配：lan1（千兆）→ br-lan，lan2（2.5G EN8801SC）→ WAN
+#      eth1（SFP 笼）通过 uci-defaults 单独配置为 wan2，不在这里声明
 #      没有这个配置，OpenWrt 会走默认 *) 分支，端口不能正常工作（br-lan 里只有 eth0）
 BOARD_NETWORK="target/linux/mediatek/filogic/base-files/etc/board.d/02_network"
 if [ -f "$BOARD_NETWORK" ] && ! grep -q 'sx,7981r128' "$BOARD_NETWORK"; then
     awk '
         !done && /^\t\*\)$/ {
             print "\tsx,7981r128)"
-            print "\t\tucidef_set_interfaces_lan_wan \"lan1\" \"eth1\""
+            print "\t\tucidef_set_interfaces_lan_wan \"lan1\" \"lan2\""
             print "\t\t;;"
             done = 1
         }
@@ -76,7 +76,7 @@ fi
 
 # 1.6. 注入首次启动 uci-defaults
 #      - 启用 WiFi（radio0/radio1 默认 disabled=1，这里改为 0）
-#      - 添加 wan2 接口（lan2，2.5G EN8801SC PHY，DHCP）并加入防火墙 WAN zone
+#      - 添加 wan2 接口（eth1，SFP 笼，DHCP）并加入防火墙 WAN zone
 mkdir -p package/base-files/files/etc/uci-defaults
 cat > package/base-files/files/etc/uci-defaults/98_sx_7981r128_init.sh << 'UCI_EOF'
 #!/bin/sh
@@ -88,9 +88,9 @@ uci set wireless.radio0.disabled=0
 uci set wireless.radio1.disabled=0
 uci commit wireless
 
-# --- 网络：添加 wan2（2.5G 口，lan2）---
+# --- 网络：添加 wan2（SFP 笼，eth1）---
 uci set network.wan2=interface
-uci set network.wan2.device=lan2
+uci set network.wan2.device=eth1
 uci set network.wan2.proto=dhcp
 uci commit network
 
