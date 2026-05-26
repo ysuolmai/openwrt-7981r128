@@ -35,12 +35,7 @@
 
 ## 安装
 
-固件产物（在 Release 里）：
-
-| 文件 | 格式 | 用途 |
-|---|---|---|
-| `...-squashfs-sysupgrade.bin` | sysupgrade-tar | **推荐**。OpenWrt 系统内 sysupgrade 升级；也可在 hanwckf 改的 U-Boot HTTP recovery 页面上传 |
-| `...-squashfs-factory.bin` | 裸 UBI 镜像（magic `UBI#`） | U-Boot 命令行下 `nand write` 直刷 `ubi` 分区时使用 |
+固件产物（在 Release 里）只有一个 `...-squashfs-sysupgrade.bin`（sysupgrade-tar 格式），覆盖所有刷机场景：OpenWrt 系统内 sysupgrade 升级、LuCI 系统升级页面、hanwckf 改的 U-Boot HTTP recovery 都用同一个文件。
 
 ### 已经在跑 OpenWrt（包括老的 hanwckf 版本）
 
@@ -58,10 +53,7 @@ sysupgrade -n /tmp/sysupgrade.bin    # -n = 不保留配置；想保留就去掉
 
 ### 原厂 MTK SDK 固件
 
-本项目**不产出** U-Boot 链镜像（无 `preloader.bin` / `bl31-uboot.fip`），从原厂直刷需要：
-
-- 先刷一个 [hanwckf/immortalwrt-mt798x](https://github.com/hanwckf/immortalwrt-mt798x) 老版本作为跳板，再 sysupgrade 到本项目固件；
-- 或者通过 U-Boot 命令行手动 `nand write` 刷 `factory.bin` 到 ubi 分区。
+本项目**不产出** U-Boot 链镜像（无 `preloader.bin` / `bl31-uboot.fip`），从原厂直刷需要先刷一个 [hanwckf/immortalwrt-mt798x](https://github.com/hanwckf/immortalwrt-mt798x) 老版本作为跳板，再 sysupgrade 到本项目固件。
 
 ---
 
